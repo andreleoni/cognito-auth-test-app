@@ -1,0 +1,7 @@
+<% if cookies[:access_token] %>
+  Estou logado e meu email é: <%= @user_email %>
+  </br>
+  <%= link_to "sair", signout_path %>
+<% else %>
+  Não estou logado
+<% end %>

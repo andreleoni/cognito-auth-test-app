@@ -1,0 +1,5 @@
+{
+  "name": "cognito-auth-test-app",
+  "private": true,
+  "dependencies": {}
+}
