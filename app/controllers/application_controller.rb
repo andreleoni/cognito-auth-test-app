@@ -7,7 +7,6 @@ class ApplicationController < ActionController::Base
 
   def index
     @user_email = user_email
-    raise id_token_decrypted.inspect
   end
 
   def sidekiq
@@ -17,6 +16,10 @@ class ApplicationController < ActionController::Base
 
   def admin
     render '404' unless has_permission?("admin")
+  end
+
+  def signin
+    redirect_to root_path
   end
 
   def signout
@@ -32,6 +35,7 @@ class ApplicationController < ActionController::Base
     cookies[:access_token] = { value: authorize_user['access_token'], expires: 20.seconds.from_now }
     cookies[:id_token] = { value: encrypt(authorize_user['id_token']), expires: 20.seconds.from_now }
     cookies[:refresh_token] = { value: authorize_user['refresh_token'], expires: 15.days.from_now } if cookies[:refresh_token].blank?
+    response.set_header('Authorization', id_token_decrypted) if cookies[:id_token].present?
   end
 
   def authenticate
@@ -47,7 +51,7 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_uri
-    'https://127.0.0.1:3000'
+    'https://127.0.0.1:3000/signin'
   end
 
   def base_uri
